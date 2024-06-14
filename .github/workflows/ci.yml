@@ -72,7 +72,7 @@ jobs:
             const payload = {
               botName: "게이트웨이 서버 Bot",
               botIconImage: "https://www.tistory.com/favicon.ico",
-              text: "인증 서버의 Pull Request가 성공적으로 올라갔어요!",
+              text: "게이트웨이 서버의 Pull Request가 성공적으로 올라갔어요!",
               attachments: [
                 {
                   title: "Pull Request URL",
