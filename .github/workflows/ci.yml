@@ -1,0 +1,133 @@
+name: Java CI with Maven
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # SONAR_HOST_URL : 소나큐브 주소
+      # SONAR_TOKEN : 소나큐브 토큰
+      - name: Execute SonarQube Analysis
+        run: |
+          mvn clean verify sonar:sonar \
+          -Dsonar.projectKey=yes-25-5-gateway \
+          -Dsonar.projectName='yes-25-5-gateway' \
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+          
+
+      - name: Build with Maven
+        run: mvn package --batch-mode
+
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          check_name: 'Maven Test Results'
+          junit_files: target/surefire-reports/**/*.xml
+
+      - name: Upload JAR to Remote Server
+        env:
+          # SSH_PRIVATE_KEY : 원격서버에서 만든 개인키(github_rsa). (github_rsa.pub 아닙니다!)
+          # SSH_USER : 원격서버 로그인 아이디 (nhnacademy)
+          # SSH_HOST : 원격서버 IP 주소 (133.186....)
+          # REMOTE_DIR : 배포할 jar 파일 위치 (없다면 mkdir로 만드시면 될 것 같아요.)
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/github_rsa
+          chmod 400 ~/.ssh/github_rsa
+          ssh-keyscan ${REMOTE_HOST} >> ~/.ssh/known_hosts
+          scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no target/*.jar ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}
+
+      - name: Send Dooray Webhook on Success
+        if: success()
+        uses: actions/github-script@v6
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          # 두레이 훅 주소 (https://hook.dooray.com/services/3204376758577275363/3824312399885046720/ZqH6q36TRc6JoU4aGrKTNA)
+          DOORAY_WEBHOOK_URL: ${{ secrets.DOORAY_WEBHOOK_URL }}
+        with:
+          script: |
+            const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
+            const payload = {
+              botName: "게이트웨이 서버 Bot",
+              botIconImage: "https://www.tistory.com/favicon.ico",
+              text: "인증 서버의 Pull Request가 성공적으로 올라갔어요!",
+              attachments: [
+                {
+                  title: "Pull Request URL",
+                  titleLink: process.env.PR_URL,
+                  color: "green",
+                  text: `PR 제목: ${process.env.PR_TITLE}, PR 작성자: ${process.env.PR_ACTOR}`
+                }
+              ]
+            };
+
+            const response = await fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+              throw new Error(`Failed to send webhook: ${response.statusText}`);
+            }
+
+      - name: Send Dooray Webhook on Failure
+        if: failure()
+        uses: actions/github-script@v6
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_ACTOR: ${{ github.actor }}
+          DOORAY_WEBHOOK_URL: ${{ secrets.DOORAY_WEBHOOK_URL }}
+        with:
+          script: |
+            const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
+            const payload = {
+              botName: "인증 서버 Bot",
+              botIconImage: "https://www.tistory.com/favicon.ico",
+              text: "인증 서버의 Pull Request가 실패했어요...",
+              attachments: [
+                {
+                  title: "Pull Request URL",
+                  titleLink: process.env.PR_URL,
+                  color: "red",
+                  text: `PR 제목: ${process.env.PR_TITLE}, PR 작성자: ${process.env.PR_ACTOR}`
+                }
+              ]
+            };
+
+            const response = await fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+              throw new Error(`Failed to send webhook: ${response.statusText}`);
+            }
