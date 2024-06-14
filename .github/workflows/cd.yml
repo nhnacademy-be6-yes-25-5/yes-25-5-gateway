@@ -50,9 +50,9 @@ jobs:
           script: |
             const webhookUrl = process.env.DOORAY_WEBHOOK_URL;
             const payload = {
-              botName: "게잍웨이 서버 Bot",
+              botName: "게이트웨이 서버 Bot",
               botIconImage: "https://www.tistory.com/favicon.ico",
-              text: "인증 서버의 배포가 성공적으로 완료되었습니다!",
+              text: "게이트웨이 서버의 배포가 성공적으로 완료되었습니다!",
               attachments: [
                 {
                   title: "Pull Request URL",
