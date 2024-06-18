@@ -30,7 +30,7 @@ jobs:
           docker run --rm my-app-ci mvn clean verify sonar:sonar \
           -Dsonar.projectKey=yes-25-5-gateway \
           -Dsonar.projectName='yes-25-5-gateway' \
-          -Dsonar.host.url=${{ secrets.SONAR_HOST }} \
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
       - name: Build Maven project in Docker
