@@ -20,6 +20,12 @@ public class RouteLocatorConfig {
                         p->p.path("/auth/**").and()
                                 .uri("lb://AUTH-SERVER")
                 )
+
+            .route("ORDER-PAYMENT-SERVER",
+                p -> p.path("/orders/**", "/payments/**")
+                    .or()
+                    .path("/policies/shipping/**", "/policies/returns/**")
+                    .uri("lb://ORDER-PAYMENT-SERVER"))
                 .build();
     }
 }
