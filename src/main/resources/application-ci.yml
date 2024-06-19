@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: authority-server
+eureka:
+  client:
+    enabled: false
+    fetchRegistry: false
+    registerWithEureka: false
+
+  instance:
+    preferIpAddress: true
+server:
+  port: 8085
