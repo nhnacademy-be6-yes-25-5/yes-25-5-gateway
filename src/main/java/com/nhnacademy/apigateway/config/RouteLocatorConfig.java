@@ -24,7 +24,7 @@ public class RouteLocatorConfig {
             .route("ORDER-PAYMENT-SERVER",
                 p -> p.path("/orders/**", "/payments/**")
                     .or()
-                    .path("/policies/shipping/**", "/policies/returns/**")
+                    .path("/policies/shipping/**", "/policies/takeout" , "/policies/returns/**")
                     .uri("lb://ORDER-PAYMENT-SERVER"))
                 .build();
     }
