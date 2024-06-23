@@ -58,7 +58,7 @@ jobs:
             docker build -t gateway-app .
             docker stop gateway-app || true
             docker rm gateway-app || true
-            docker run -d -p 8080:8080 --name gateway-app gateway-app
+            docker run -d -p 8085:8085 --name gateway-app gateway-app
           EOF
 
       - name: Send Deployment Status to Dooray
