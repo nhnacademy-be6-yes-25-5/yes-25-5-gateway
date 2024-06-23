@@ -2,7 +2,7 @@ name: Java CD with Docker
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "develop", "main" ]
 
 permissions: write-all
 
@@ -55,10 +55,10 @@ jobs:
               echo "Dockerfile not found!"
               exit 1
             fi
-            docker build -t my-app .
-            docker stop my-app || true
-            docker rm my-app || true
-            docker run -d -p 8080:8080 --name my-app my-app
+            docker build -t gateway-app .
+            docker stop gateway-app || true
+            docker rm gateway-app || true
+            docker run -d -p 8085:8085 --name gateway-app gateway-app
           EOF
 
       - name: Send Deployment Status to Dooray
