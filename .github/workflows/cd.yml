@@ -32,6 +32,7 @@ jobs:
           scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no Dockerfile ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/Dockerfile
           scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no pom.xml ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/pom.xml
           scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no -r src ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/src
+          scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no -r src/main/resources/application-prod.yml ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/src/main/resources/application-prod.yml
 
       - name: Check Dockerfile on Remote Server
         env:
@@ -48,6 +49,8 @@ jobs:
           REMOTE_USER: ${{ secrets.SSH_USER }}
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+          EUREKA_SERVER_HOSTNAME: ${{ secrets.EUREKA_SERVER_HOSTNAME }}
+          EUREKA_SERVER_PORT: ${{ secrets.EUREKA_SERVER_PORT }}
         run: |
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
             cd ${REMOTE_DIR}
@@ -55,10 +58,10 @@ jobs:
               echo "Dockerfile not found!"
               exit 1
             fi
-            docker build -t gateway-app .
+            docker build -t gateway-app --build-arg EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} --build-arg EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} .
             docker stop gateway-app || true
             docker rm gateway-app || true
-            docker run -d -p 8085:8085 --name gateway-app gateway-app
+            docker run -d -p 8085:8085 --name gateway-app -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} gateway-app
           EOF
 
       - name: Send Deployment Status to Dooray

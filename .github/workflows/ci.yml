@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t gateway-app .
+          docker build --no-cache -t gateway-app .
 
       - name: Run Maven tests in Docker
         run: |
