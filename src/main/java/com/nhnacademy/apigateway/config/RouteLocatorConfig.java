@@ -28,14 +28,15 @@ public class RouteLocatorConfig {
                         p->p.path("/books").and()
                                 .uri("lb://BOOK-USER-SERVER")
                 )
-                .route("BOOK-USER-SERVER",
-                        p->p.path("/users/**", "/users").and()
-                                .uri("lb://BOOK-USER-SERVER")
-                )
-                .route("ORDER-PAYMENT-SERVER",
-                        p->p.path("/orders/**").and()
-                                .uri("lb://ORDER-PAYMENT-SERVER")
-                )
-                .build();
+               .route("BOOK-USER-SERVER",
+                p -> p.path("/users/**").and()
+                    .uri("lb://BOOK-USER-SERVER")
+            )
+                 .route("ORDER-PAYMENT-SERVER",
+                p -> p.path("/orders/**", "/payments/**")
+                    .or()
+                    .path("/policies/shipping/**", "/policies/takeout", "/policies/returns/**")
+                    .uri("lb://ORDER-PAYMENT-SERVER"))
+            .build();
     }
 }
