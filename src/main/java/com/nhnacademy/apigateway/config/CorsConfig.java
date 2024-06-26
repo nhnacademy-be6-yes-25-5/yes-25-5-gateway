@@ -12,6 +12,7 @@ public class CorsConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.addAllowedOriginPattern("*");
         corsConfig.addAllowedOrigin("*");
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
