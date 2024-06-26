@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: api-gateway
+
 eureka:
   client:
     serviceUrl:
@@ -11,6 +12,7 @@ eureka:
   instance:
     preferIpAddress: true
     hostname: ${EUREKA_SERVER_HOSTNAME}
+
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
