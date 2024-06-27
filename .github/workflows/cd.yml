@@ -59,6 +59,7 @@ jobs:
           REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
           EUREKA_SERVER_HOSTNAME: ${{ secrets.EUREKA_SERVER_HOSTNAME }}
           EUREKA_SERVER_PORT: ${{ secrets.EUREKA_SERVER_PORT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
             cd ${REMOTE_DIR}
