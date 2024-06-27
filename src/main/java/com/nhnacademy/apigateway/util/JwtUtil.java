@@ -1,13 +1,17 @@
 package com.nhnacademy.apigateway.util;
 
+import com.nhnacademy.apigateway.exception.JwtException;
+import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
@@ -15,8 +19,8 @@ public class JwtUtil {
 
     private final SecretKey secretKey;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret) {
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    public JwtUtil(@Value("${jwt.secret}") String secretKey) {
+        this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -27,17 +31,22 @@ public class JwtUtil {
      */
     public boolean isTokenValid(String token) {
         try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+            Jws<Claims> claimJets = Jwts.parser().setSigningKey(secretKey)
+                    .parseClaimsJws(token);
 
-            Date expirationDate = claims.getExpiration();
-            return expirationDate.after(new Date());
-        } catch (Exception e) {
-            // 토큰 파싱 중 예외 발생 시 (만료, 서명 불일치 등)
-            return false;
+            Claims claims = claimJets.getBody();
+
+            if (claims.getExpiration().before(new Date())) {
+                throw new JwtException(
+                        ErrorStatus.toErrorStatus("토큰의 유효시간이 지났습니다.", 401, LocalDateTime.now())
+                );
+            }
+
+            return true;
+        } catch (SignatureException e) {
+            throw new JwtException(
+                    ErrorStatus.toErrorStatus("시크릿키 변경이 감지되었습니다.", 401, LocalDateTime.now())
+            );
         }
     }
 
