@@ -70,7 +70,7 @@ jobs:
             docker build -t gateway-app .
             docker stop gateway-app || true
             docker rm gateway-app || true
-            docker run -d -p 8070:8070 --name gateway-app \
+            docker run -d -p 8085:8085 --name gateway-app \
               --network yes255-network \
               -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} \
               -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} \
