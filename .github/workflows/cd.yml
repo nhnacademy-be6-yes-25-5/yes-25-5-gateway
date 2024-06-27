@@ -67,10 +67,15 @@ jobs:
               echo "Dockerfile not found!"
               exit 1
             fi
-            docker build -t gateway-app --build-arg EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} --build-arg EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} .
+            docker build -t gateway-app .
             docker stop gateway-app || true
             docker rm gateway-app || true
-            docker run -d -p 8085:8085 --name gateway-app --network yes255-network -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} gateway-app
+            docker run -d -p 8070:8070 --name gateway-app \
+              --network yes255-network \
+              -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} \
+              -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} \
+              -e JWT_SECRET=${JWT_SECRET} \
+              gateway-app
           EOF
 
       - name: Send Deployment Status to Dooray
