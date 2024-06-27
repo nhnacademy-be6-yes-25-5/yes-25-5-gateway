@@ -1,3 +1,9 @@
+server:
+  port: 8085
 spring:
+  application:
+    name: api-gateway
   profiles:
     active: dev
+jwt:
+  secret: ${JWT_SECRET}
