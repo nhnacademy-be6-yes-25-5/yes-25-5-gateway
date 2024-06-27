@@ -33,13 +33,7 @@ public class JwtAuthenticationGlobalFilter implements GlobalFilter {
             String token = authorizationHeader.substring(7);
 
             if (jwtUtil.isTokenValid(token)) {
-                // 토큰이 유효한 경우
                 return chain.filter(exchange);
-            } else {
-                // TODO 토큰이 만료된 경우 -> 리프레시 토큰 구현 후 관련 로직 처리 예정
-                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-
-                return exchange.getResponse().setComplete();
             }
         }
 

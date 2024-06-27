@@ -25,7 +25,7 @@ public class JwtUtil {
      * JWT 토큰의 만료 여부를 검사합니다.
      *
      * @param token 검사할 JWT 토큰
-     * @return 토큰이 유효하면 true, 그렇지 않으면 false
+     * @return 토큰이 유효하면 true, 그렇지 않으면 예외 발생
      */
     public boolean isTokenValid(String token) {
 
