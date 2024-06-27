@@ -3,10 +3,8 @@ server:
 spring:
   application:
     name: api-gateway
-  profiles:
-    active: dev
 jwt:
-  secret: ${JWT_SECRET}
+  secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
 eureka:
   client:
     enabled: false
