@@ -34,14 +34,15 @@ public class JwtUtil {
 
             return true;
         } catch (ExpiredJwtException e) {
-            throw new JwtException(
-                    ErrorStatus.toErrorStatus("토큰이 만료되었습니다.", 401, LocalDateTime.now())
-            );
-        } catch (SignatureException e) {
-            throw new JwtException(
-                    ErrorStatus.toErrorStatus("시크릿키 변경이 감지되었습니다.", 401, LocalDateTime.now())
-            );
+            return false;
+//            throw new JwtException(
+//                    ErrorStatus.toErrorStatus("토큰이 만료되었습니다.", 401, LocalDateTime.now())
+//            );
+//        } catch (SignatureException e) {
+//            throw new JwtException(
+//                    ErrorStatus.toErrorStatus("시크릿키 변경이 감지되었습니다.", 401, LocalDateTime.now())
+//            );
         }
     }
-    
+
 }

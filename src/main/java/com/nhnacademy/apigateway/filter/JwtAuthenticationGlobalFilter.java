@@ -1,6 +1,8 @@
 package com.nhnacademy.apigateway.filter;
 
+import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
 import com.nhnacademy.apigateway.util.JwtUtil;
+import com.nhnacademy.apigateway.exception.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -9,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -34,6 +39,8 @@ public class JwtAuthenticationGlobalFilter implements GlobalFilter {
 
             if (jwtUtil.isTokenValid(token)) {
                 return chain.filter(exchange);
+            } else {
+                throw new JwtException(ErrorStatus.toErrorStatus("토큰이 만료되었습니다.", 401, LocalDateTime.now()));
             }
         }
 
