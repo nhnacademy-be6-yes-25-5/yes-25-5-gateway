@@ -26,6 +26,14 @@ public class JwtAuthenticationGlobalFilter implements GlobalFilter {
             return chain.filter(exchange);
         }
 
+        if (path.startsWith("/orders/none")) {
+            return chain.filter(exchange);
+        }
+
+        if (path.matches(".*/orders/.*/delivery.*")) {
+            return chain.filter(exchange);
+        }
+
         String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
