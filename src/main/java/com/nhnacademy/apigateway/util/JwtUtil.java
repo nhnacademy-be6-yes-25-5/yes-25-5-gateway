@@ -24,24 +24,20 @@ public class JwtUtil {
     /**
      * JWT 토큰의 만료 여부를 검사합니다.
      *
-     * @param token 검사할 JWT 토큰
+     * @param accessToken 검사할 JWT 토큰
      * @return 토큰이 유효하면 true, 그렇지 않으면 예외 발생
      */
-    public boolean isTokenValid(String token) {
+    public boolean isTokenValid(String accessToken) {
 
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken);
             return true;
         } catch (ExpiredJwtException e) {
             return false;
-//            throw new JwtException(
-//                    ErrorStatus.toErrorStatus("토큰이 만료되었습니다.", 401, LocalDateTime.now())
-//            );
-//        } catch (SignatureException e) {
-//            throw new JwtException(
-//                    ErrorStatus.toErrorStatus("시크릿키 변경이 감지되었습니다.", 401, LocalDateTime.now())
-//            );
+        } catch (SignatureException e) {
+            throw new JwtException(
+                    ErrorStatus.toErrorStatus("시크릿키 변경이 감지되었습니다.", 401, LocalDateTime.now())
+            );
         }
     }
 

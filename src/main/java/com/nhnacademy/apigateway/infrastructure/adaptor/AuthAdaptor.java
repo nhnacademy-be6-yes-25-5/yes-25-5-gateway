@@ -1,15 +1,16 @@
-//package com.nhnacademy.apigateway.infrastructure.adaptor;
-//
-//import org.springframework.cloud.openfeign.FeignClient;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//
-//@FeignClient(name = "authAdaptor", url = "${eureka.gateway}/auth")
-//public interface AuthAdaptor {
-//
-//    @GetMapping("/test")
-//    ResponseEntity<String> tokenTest();
-//
-//}
+package com.nhnacademy.apigateway.infrastructure.adaptor;
+
+import com.nhnacademy.apigateway.presentation.dto.request.CreateAccessTokenRequest;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import com.nhnacademy.apigateway.presentation.dto.response.AuthResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+
+@FeignClient(name = "authAdaptor", url = "${api.authority-server}")
+public interface AuthAdaptor {
+
+    @GetMapping("/refresh")
+    ResponseEntity<AuthResponse> refreshAccessToken(@RequestHeader("Authorization") CreateAccessTokenRequest expiredAccessJwt);
+
+}

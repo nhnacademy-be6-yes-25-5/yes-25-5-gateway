@@ -60,6 +60,7 @@ jobs:
           EUREKA_SERVER_HOSTNAME: ${{ secrets.EUREKA_SERVER_HOSTNAME }}
           EUREKA_SERVER_PORT: ${{ secrets.EUREKA_SERVER_PORT }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          AUTHORITY_SERVER: ${{ secrets.AUTHORITY_SERVER }}
         run: |
           ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
             cd ${REMOTE_DIR}
@@ -75,6 +76,7 @@ jobs:
               -e EUREKA_SERVER_HOSTNAME=${EUREKA_SERVER_HOSTNAME} \
               -e EUREKA_SERVER_PORT=${EUREKA_SERVER_PORT} \
               -e JWT_SECRET=${JWT_SECRET} \
+              -e AUTHORITY_SERVER=${AUTHORITY_SERVER} \
               gateway-app
           EOF
 
