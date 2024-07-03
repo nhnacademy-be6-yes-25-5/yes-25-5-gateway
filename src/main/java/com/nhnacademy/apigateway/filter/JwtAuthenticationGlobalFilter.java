@@ -2,6 +2,7 @@ package com.nhnacademy.apigateway.filter;
 
 import com.nhnacademy.apigateway.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpHeaders;
@@ -30,11 +31,11 @@ public class JwtAuthenticationGlobalFilter implements GlobalFilter {
             return chain.filter(exchange);
         }
 
-        if (path.matches(".*/orders/.*/delivery.*")) {
+        String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+
+        if (path.matches(".*/orders/.*/delivery.*") && StringUtils.isEmpty(authorizationHeader)) {
             return chain.filter(exchange);
         }
-
-        String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
