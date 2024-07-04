@@ -45,6 +45,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
+        ServerHttpRequest request = exchange.getRequest();
 
         if (isExcludedPath(path)) {
             return chain.filter(exchange);
@@ -57,7 +58,13 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
         if (path.matches(".*/orders/.*/delivery.*")) {
             return chain.filter(exchange);
         }
-        ServerHttpRequest request = exchange.getRequest();
+
+        if (path.startsWith("/users/cart-books")
+            && exchange.getRequest().getMethod().name().equals("POST") 
+            && request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION) == null) {
+            return chain.filter(exchange);
+        }
+
         String accessJwtHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String accessJwt = accessJwtHeader.substring(7);
         String refreshJwt = request.getHeaders().getFirst("Refresh-Token");
@@ -88,7 +95,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
     /**
      * 액세스 토큰을 갱신합니다.
      *
-     * @param accessToken 현재 액세스 토큰
+//     * @param accessToken 현재 액세스 토큰
      * @return 갱신된 인증 응답을 포함한 Mono
      */
     private Mono<AuthResponse> refreshToken(String accessJwtHeader) {
@@ -128,7 +135,8 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
      * @return 경로가 제외되면 true, 그렇지 않으면 false
      */
     private boolean isExcludedPath(String path) {
-        return path.equals("/auth/login") || path.equals("/auth/refresh") || path.equals("/auth/logout") || path.equals("/books/categories/root") || path.equals("/books");
+        return path.equals("/auth/login") || path.equals("/auth/refresh") || path.equals("/auth/logout")
+            || path.equals("/books/categories/root") || path.startsWith("/books");
     }
 
     /**
