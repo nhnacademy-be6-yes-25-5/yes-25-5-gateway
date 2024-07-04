@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface AuthAdaptor {
 
     @GetMapping("/refresh")
-    ResponseEntity<AuthResponse> refreshAccessToken(@RequestHeader("Authorization") String expiredAccessJwt);
+    ResponseEntity<AuthResponse> refreshAccessToken(@RequestHeader("Authorization") String accessJwtHeader);
 
 }
