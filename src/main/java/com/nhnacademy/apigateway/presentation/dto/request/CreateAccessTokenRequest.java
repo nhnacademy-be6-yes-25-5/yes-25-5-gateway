@@ -1,6 +1,12 @@
 package com.nhnacademy.apigateway.presentation.dto.request;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Builder
-public record CreateAccessTokenRequest(String expiredAccessJwt) { }
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateAccessTokenRequest {
+    private String refreshToken;
+}

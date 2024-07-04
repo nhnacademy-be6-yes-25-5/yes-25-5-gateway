@@ -25,7 +25,7 @@ public class RouteLocatorConfig {
                                 .uri("lb://COUPON-SERVER")
                 )
                 .route("BOOK-USER-SERVER",
-                        p->p.path("/books/**").and()
+                        p->p.path("/books").and()
                                 .uri("lb://BOOK-USER-SERVER")
                 )
                .route("BOOK-USER-SERVER",

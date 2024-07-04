@@ -2,6 +2,7 @@ package com.nhnacademy.apigateway.util;
 
 import com.nhnacademy.apigateway.exception.JwtException;
 import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
+import com.nhnacademy.apigateway.exception.ExpireAccessJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

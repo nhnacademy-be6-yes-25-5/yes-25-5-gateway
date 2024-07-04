@@ -6,11 +6,10 @@ spring:
 jwt:
   secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
 eureka:
+  gateway: http://localhost:8085
   client:
     enabled: false
     fetchRegistry: false
     registerWithEureka: false
   instance:
     preferIpAddress: true
-api:
-  authority-server: http://localhost:8050
