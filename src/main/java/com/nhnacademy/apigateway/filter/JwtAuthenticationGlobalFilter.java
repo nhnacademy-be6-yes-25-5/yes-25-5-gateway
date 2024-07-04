@@ -1,9 +1,15 @@
 package com.nhnacademy.apigateway.filter;
 
-import com.nhnacademy.apigateway.presentation.dto.request.CreateAccessTokenRequest;
-import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.apigateway.application.service.TokenService;
 import com.nhnacademy.apigateway.exception.RefreshTokenFailedException;
+import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
+import com.nhnacademy.apigateway.presentation.dto.request.CreateAccessTokenRequest;
+import com.nhnacademy.apigateway.presentation.dto.response.AuthResponse;
+import com.nhnacademy.apigateway.util.JwtUtil;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -15,12 +21,6 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-import com.nhnacademy.apigateway.util.JwtUtil;
-import com.nhnacademy.apigateway.application.service.TokenService;
-import com.nhnacademy.apigateway.presentation.dto.response.AuthResponse;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -86,7 +86,8 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
      * @return 제외 경로인 경우 true, 그렇지 않으면 false
      */
     private boolean isExcludedPath(String path) {
-        return path.equals("/auth/login");
+        return path.equals("/auth/login") || path.startsWith("/users/cart-books")
+            || path.startsWith("/detail") || path.startsWith("/books");
     }
 
     /**
