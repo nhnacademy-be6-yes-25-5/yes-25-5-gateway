@@ -10,6 +10,7 @@ import com.nhnacademy.apigateway.infrastructure.adaptor.AuthAdaptor;
 @Service
 @RequiredArgsConstructor
 public class TokenService {
+
     @Lazy
     private final AuthAdaptor authAdaptor;
 

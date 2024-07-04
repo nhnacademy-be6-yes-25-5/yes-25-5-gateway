@@ -19,6 +19,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * JWT 인증을 처리하는 글로벌 필터 클래스입니다.
+ * 이 필터는 모든 요청에 대해 JWT 토큰을 검증하고, 필요한 경우 토큰을 갱신합니다.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -28,6 +32,13 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
     private final TokenService tokenService;
     private final JwtUtil jwtUtil;
 
+    /**
+     * 요청을 필터링하고 JWT 인증을 처리합니다.
+     *
+     * @param exchange 현재 서버 웹 교환
+     * @param chain 필터 체인
+     * @return 처리된 요청에 대한 Mono
+     */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
@@ -72,11 +83,25 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
         return chain.filter(exchange);
     }
 
+    /**
+     * 액세스 토큰을 갱신합니다.
+     *
+     * @param accessToken 현재 액세스 토큰
+     * @return 갱신된 인증 응답을 포함한 Mono
+     */
     private Mono<AuthResponse> refreshToken(String accessToken) {
         return Mono.fromCallable(() -> tokenService.updateAccessToken(accessToken).getBody())
                 .onErrorMap(e -> new RuntimeException("토큰 갱신 중 오류가 발생했습니다.", e));
     }
 
+    /**
+     * 인증 오류 응답을 생성합니다.
+     *
+     * @param exchange 현재 서버 웹 교환
+     * @param message 오류 메시지
+     * @param status HTTP 상태 코드
+     * @return 오류 응답을 포함한 Mono
+     */
     private Mono<Void> createAuthenticationErrorResponse(ServerWebExchange exchange, String message, int status) {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("status", status);
@@ -94,8 +119,14 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
         }
     }
 
+    /**
+     * 주어진 경로가 인증에서 제외되는지 확인합니다.
+     *
+     * @param path 요청 경로
+     * @return 경로가 제외되면 true, 그렇지 않으면 false
+     */
     private boolean isExcludedPath(String path) {
-        return path.equals("/auth/login") || path.equals("/auth/refresh") || path.equals("/auth/logout");
+        return path.equals("/auth/login") || path.equals("/auth/refresh") || path.equals("/auth/logout") || path.equals("/books/categories/root") || path.equals("/books");
     }
 
     /**

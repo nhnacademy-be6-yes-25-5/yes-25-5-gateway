@@ -10,8 +10,4 @@ public class UuidMisMatchException extends ApplicationException {
         super(errorStatus);
     }
 
-    public ErrorStatus getErrorStatus() {
-        return errorStatus;
-    }
-
 }

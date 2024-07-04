@@ -2,7 +2,6 @@ package com.nhnacademy.apigateway.util;
 
 import com.nhnacademy.apigateway.exception.JwtException;
 import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
-import com.nhnacademy.apigateway.exception.ExpireAccessJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -26,7 +25,7 @@ public class JwtUtil {
      * JWT 토큰의 만료 여부를 검사합니다.
      *
      * @param accessToken 검사할 JWT 토큰
-     * @return 토큰이 유효하면 true, 그렇지 않으면 예외 발생
+     * @return 토큰이 유효하면 true, 그렇지 않으면 false 반환하거나 예외 발생
      */
     public boolean isTokenValid(String accessToken) {
 
