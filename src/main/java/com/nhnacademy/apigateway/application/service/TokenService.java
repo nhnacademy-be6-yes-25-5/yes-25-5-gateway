@@ -1,6 +1,5 @@
 package com.nhnacademy.apigateway.application.service;
 
-import com.nhnacademy.apigateway.presentation.dto.request.CreateAccessTokenRequest;
 import com.nhnacademy.apigateway.presentation.dto.response.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
@@ -15,8 +14,8 @@ public class TokenService {
     @Lazy
     private final AuthAdaptor authAdaptor;
 
-    public ResponseEntity<AuthResponse> updateAccessToken(CreateAccessTokenRequest expiredAccessJwt) {
-        return authAdaptor.refreshAccessToken(expiredAccessJwt);
+    public ResponseEntity<AuthResponse> updateAccessToken(String accessJwtHeader) {
+        return authAdaptor.refreshAccessToken(accessJwtHeader);
     }
 
 }

@@ -37,4 +37,5 @@ public class GlobalErrorWebExceptionHandler implements ErrorWebExceptionHandler 
             return exchange.getResponse().bufferFactory().wrap(bytes);
         }));
     }
+
 }

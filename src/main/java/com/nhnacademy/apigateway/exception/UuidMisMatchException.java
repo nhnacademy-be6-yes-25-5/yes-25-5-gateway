@@ -2,11 +2,11 @@ package com.nhnacademy.apigateway.exception;
 
 import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
 
-public class RefreshTokenFailedException extends ApplicationException {
+public class UuidMisMatchException extends ApplicationException {
 
     private ErrorStatus errorStatus;
 
-    public RefreshTokenFailedException(ErrorStatus errorStatus) {
+    public UuidMisMatchException(ErrorStatus errorStatus) {
         super(errorStatus);
     }
 
