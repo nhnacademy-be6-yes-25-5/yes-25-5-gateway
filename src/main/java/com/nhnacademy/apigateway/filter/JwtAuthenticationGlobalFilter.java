@@ -39,6 +39,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
      * @param chain 필터 체인
      * @return 처리된 요청에 대한 Mono
      */
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
