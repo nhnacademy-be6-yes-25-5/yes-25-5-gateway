@@ -31,6 +31,10 @@ public class JwtAuthenticationGlobalFilter implements GlobalFilter {
             return chain.filter(exchange);
         }
 
+        if (path.equals("/coupon/modal") || path.matches("/coupons/books/\\d+/coupons")) {
+            return chain.filter(exchange);
+        }
+
         String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (path.matches(".*/orders/.*/delivery.*") && StringUtils.isEmpty(authorizationHeader)) {
