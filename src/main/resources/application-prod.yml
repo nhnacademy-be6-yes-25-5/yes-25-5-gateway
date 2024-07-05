@@ -16,4 +16,4 @@ logging:
     reactor.netty.http.client: INFO
 
 api:
-  authority-server: http://localhost:8050
+  authority-server: http://${EUREKA_SERVER_HOSTNAME}:8050
