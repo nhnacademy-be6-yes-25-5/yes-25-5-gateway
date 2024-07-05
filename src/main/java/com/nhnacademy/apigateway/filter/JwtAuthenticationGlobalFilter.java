@@ -31,7 +31,7 @@ public class JwtAuthenticationGlobalFilter implements GlobalFilter {
             return chain.filter(exchange);
         }
 
-        if (path.equals("/coupon/modal") || path.matches("/coupons/books/\\d+/coupons")) {
+        if (path.matches("/coupons")) {
             return chain.filter(exchange);
         }
 
