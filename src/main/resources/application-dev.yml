@@ -9,3 +9,5 @@ logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty.http.client: INFO
+api:
+  authority-server: http://localhost:8050
