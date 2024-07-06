@@ -60,6 +60,10 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
         }
 
         String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader == null && path.startsWith("/reviews/books")) {
+            return chain.filter(exchange);
+        }
+
         if (path.matches(".*/orders/.*/delivery.*")) {
             return chain.filter(exchange);
         }
