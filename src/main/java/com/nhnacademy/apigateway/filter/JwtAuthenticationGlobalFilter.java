@@ -82,7 +82,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
 
         if (!jwtUtil.isTokenValid(accessJwt)) {
             if (jwtUtil.isTokenValid(refreshJwt)) {
-                return refreshToken(accessJwtHeader)
+                return refreshToken(refreshJwt)
                         .flatMap(newTokens -> {
                             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + newTokens.accessToken())
@@ -105,11 +105,10 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
 //     * @param accessToken 현재 액세스 토큰
      * @return 갱신된 인증 응답을 포함한 Mono
      */
-    private Mono<AuthResponse> refreshToken(String accessJwtHeader) {
-        log.info("Before Access token refreshed: {}", accessJwtHeader);
+    private Mono<AuthResponse> refreshToken(String refreshJwt) {
         return Mono.fromCallable(() -> {
                     log.info("Refreshing access token...");
-                    AuthResponse newTokens = tokenService.updateAccessToken(accessJwtHeader).getBody();
+                    AuthResponse newTokens = tokenService.updateAccessToken(refreshJwt).getBody();
                     log.info("Access token refreshed: {}", newTokens.accessToken());
                     return newTokens;
                 })
@@ -153,9 +152,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
     private boolean isExcludedPath(String path) {
         return path.equals("/auth/login") || path.equals("/auth/refresh") || path.equals("/auth/logout")
             || path.equals("/books/categories/root") || path.startsWith("/books") || path.equals("/users/check-email") || path.equals("/users/sign-up")
-                || path.equals("/users/find/password") || path.equals("/users/find/email") || path.equals("/users/info")
-            || path.equals("/books/categories/root") || path.startsWith("/books") || path.equals("/users/check-email") || path.equals("/users/sign-up")
-            || path.startsWith("/auth/dormant");
+                || path.equals("/users/find/password") || path.equals("/users/find/email") || path.equals("/users/info");
     }
 
     /**
