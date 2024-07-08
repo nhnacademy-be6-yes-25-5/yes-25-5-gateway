@@ -146,6 +146,8 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
     private boolean isExcludedPath(String path) {
         return path.equals("/auth/login") || path.equals("/auth/refresh") || path.equals("/auth/logout")
             || path.equals("/books/categories/root") || path.startsWith("/books") || path.equals("/users/check-email") || path.equals("/users/sign-up")
+                || path.equals("/users/find/password") || path.equals("/users/find/email") || path.equals("/users/info")
+            || path.equals("/books/categories/root") || path.startsWith("/books") || path.equals("/users/check-email") || path.equals("/users/sign-up")
             || path.startsWith("/auth/dormant");
     }
 
