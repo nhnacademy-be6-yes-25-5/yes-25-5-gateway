@@ -1,7 +1,5 @@
 package com.nhnacademy.apigateway.filter;
 
-import com.nhnacademy.apigateway.presentation.dto.request.CreateAccessTokenRequest;
-import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -108,8 +106,17 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
      * @return 갱신된 인증 응답을 포함한 Mono
      */
     private Mono<AuthResponse> refreshToken(String accessJwtHeader) {
-        return Mono.fromCallable(() -> tokenService.updateAccessToken(accessJwtHeader).getBody())
-                .onErrorMap(e -> new RuntimeException("토큰 갱신 중 오류가 발생했습니다.", e));
+        log.info("Before Access token refreshed: {}", accessJwtHeader);
+        return Mono.fromCallable(() -> {
+                    log.info("Refreshing access token...");
+                    AuthResponse newTokens = tokenService.updateAccessToken(accessJwtHeader).getBody();
+                    log.info("Access token refreshed: {}", newTokens.accessToken());
+                    return newTokens;
+                })
+                .onErrorMap(e -> {
+                    log.error("Error refreshing token: {}", e.getMessage());
+                    return new RuntimeException("토큰 갱신 중 오류가 발생했습니다.", e);
+                });
     }
 
     /**
