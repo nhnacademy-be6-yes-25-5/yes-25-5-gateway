@@ -72,6 +72,18 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
+        if (path.matches("/books/likes/\\d+/exist")) {
+            try {
+
+                String accessJwtHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+                String accessJwt = accessJwtHeader.substring(7);
+                String refreshJwt = request.getHeaders().getFirst("Refresh-Token");
+
+            } catch(NullPointerException e) {
+                return chain.filter(exchange);
+            }
+        }
+
         String accessJwtHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String accessJwt = accessJwtHeader.substring(7);
         String refreshJwt = request.getHeaders().getFirst("Refresh-Token");
