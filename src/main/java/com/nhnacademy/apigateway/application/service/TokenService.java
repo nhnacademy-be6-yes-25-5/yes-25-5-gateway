@@ -14,8 +14,8 @@ public class TokenService {
     @Lazy
     private final AuthAdaptor authAdaptor;
 
-    public ResponseEntity<AuthResponse> updateAccessToken(String accessJwtHeader) {
-        return authAdaptor.refreshAccessToken(accessJwtHeader);
+    public ResponseEntity<AuthResponse> updateAccessToken(String refreshJwt) {
+        return authAdaptor.refreshAccessToken(refreshJwt);
     }
 
 }

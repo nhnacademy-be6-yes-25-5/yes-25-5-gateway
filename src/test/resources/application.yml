@@ -6,7 +6,7 @@ spring:
 jwt:
   secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
 eureka:
-  gateway: http://localhost:8085
+  gateway: http://127.0.0.1:8085
   client:
     enabled: false
     fetchRegistry: false

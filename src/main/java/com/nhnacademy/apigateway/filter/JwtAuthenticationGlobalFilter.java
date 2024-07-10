@@ -1,7 +1,5 @@
 package com.nhnacademy.apigateway.filter;
 
-import com.nhnacademy.apigateway.presentation.dto.request.CreateAccessTokenRequest;
-import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +82,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
 
         if (!jwtUtil.isTokenValid(accessJwt)) {
             if (jwtUtil.isTokenValid(refreshJwt)) {
-                return refreshToken(accessJwtHeader)
+                return refreshToken(refreshJwt)
                         .flatMap(newTokens -> {
                             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + newTokens.accessToken())
@@ -107,9 +105,17 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
 //     * @param accessToken 현재 액세스 토큰
      * @return 갱신된 인증 응답을 포함한 Mono
      */
-    private Mono<AuthResponse> refreshToken(String accessJwtHeader) {
-        return Mono.fromCallable(() -> tokenService.updateAccessToken(accessJwtHeader).getBody())
-                .onErrorMap(e -> new RuntimeException("토큰 갱신 중 오류가 발생했습니다.", e));
+    private Mono<AuthResponse> refreshToken(String refreshJwt) {
+        return Mono.fromCallable(() -> {
+                    log.info("Refreshing access token...");
+                    AuthResponse newTokens = tokenService.updateAccessToken(refreshJwt).getBody();
+                    log.info("Access token refreshed: {}", newTokens.accessToken());
+                    return newTokens;
+                })
+                .onErrorMap(e -> {
+                    log.error("Error refreshing token: {}", e.getMessage());
+                    return new RuntimeException("토큰 갱신 중 오류가 발생했습니다.", e);
+                });
     }
 
     /**
@@ -146,9 +152,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
     private boolean isExcludedPath(String path) {
         return path.equals("/auth/login") || path.equals("/auth/refresh") || path.equals("/auth/logout")
             || path.equals("/books/categories/root") || path.startsWith("/books") || path.equals("/users/check-email") || path.equals("/users/sign-up")
-                || path.equals("/users/find/password") || path.equals("/users/find/email") || path.equals("/users/info")
-            || path.equals("/books/categories/root") || path.startsWith("/books") || path.equals("/users/check-email") || path.equals("/users/sign-up")
-            || path.startsWith("/auth/dormant");
+                || path.equals("/users/find/password") || path.equals("/users/find/email") || path.equals("/users/info");
     }
 
     /**
