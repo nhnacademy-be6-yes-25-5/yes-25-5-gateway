@@ -1,4 +1,4 @@
-package com.nhnacademy.apigateway.exception.payload;
+package com.nhnacademy.apigateway.common.exception.payload;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
