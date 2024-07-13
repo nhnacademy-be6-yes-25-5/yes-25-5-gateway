@@ -1,6 +1,6 @@
-package com.nhnacademy.apigateway.exception;
+package com.nhnacademy.apigateway.common.exception;
 
-import com.nhnacademy.apigateway.exception.payload.ErrorStatus;
+import com.nhnacademy.apigateway.common.exception.payload.ErrorStatus;
 
 public class ExpireAccessJwtException extends ApplicationException {
 
