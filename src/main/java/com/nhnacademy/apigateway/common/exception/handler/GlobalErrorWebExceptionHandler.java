@@ -1,15 +1,14 @@
-package com.nhnacademy.apigateway.exception.handler;
+package com.nhnacademy.apigateway.common.exception.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.apigateway.common.exception.ApplicationException;
+import com.nhnacademy.apigateway.common.exception.payload.ErrorStatus;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.Map;
 
 @Component
 @Order(-2)
@@ -23,19 +22,17 @@ public class GlobalErrorWebExceptionHandler implements ErrorWebExceptionHandler 
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        Map<String, Object> errorPropertiesMap = Map.of(
-                "status", HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "error", "Internal Server Error",
-                "message", ex.getMessage()
-        );
+        return handleApplicationException(exchange, (ApplicationException) ex);
+    }
 
-        exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+    private Mono<Void> handleApplicationException(ServerWebExchange exchange, ApplicationException ex) {
+        ErrorStatus errorStatus = ex.getErrorStatus();
+        exchange.getResponse().setStatusCode(errorStatus.toHttpStatus());
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
         return exchange.getResponse().writeWith(Mono.fromCallable(() -> {
-            byte[] bytes = objectMapper.writeValueAsBytes(errorPropertiesMap);
+            byte[] bytes = objectMapper.writeValueAsBytes(errorStatus);
             return exchange.getResponse().bufferFactory().wrap(bytes);
         }));
     }
-
 }

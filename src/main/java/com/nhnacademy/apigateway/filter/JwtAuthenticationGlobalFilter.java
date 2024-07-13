@@ -20,6 +20,7 @@ import com.nhnacademy.apigateway.presentation.dto.response.AuthResponse;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import com.nhnacademy.apigateway.infrastructure.adaptor.AuthAdaptor;
 
 /**
  * JWT 인증을 처리하는 글로벌 필터 클래스입니다.
@@ -33,6 +34,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
     private final ObjectMapper objectMapper;
     private final TokenService tokenService;
     private final JwtUtil jwtUtil;
+
 
     /**
      * 요청을 필터링하고 JWT 인증을 처리합니다.
@@ -68,7 +70,9 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
-        if (path.matches(".*/orders/.*/delivery.*")) {
+        if (path.startsWith("/users/cart-books")
+                && exchange.getRequest().getMethod().name().equals("POST")
+                && request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION) == null) {
             return chain.filter(exchange);
         }
 
@@ -79,10 +83,14 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
                 String accessJwt = accessJwtHeader.substring(7);
                 String refreshJwt = request.getHeaders().getFirst("Refresh-Token");
 
+                return chain.filter(exchange);
+
             } catch(NullPointerException e) {
                 return chain.filter(exchange);
             }
         }
+
+
 
         String accessJwtHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String accessJwt = accessJwtHeader.substring(7);
@@ -114,7 +122,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
     /**
      * 액세스 토큰을 갱신합니다.
      *
-//     * @param accessToken 현재 액세스 토큰
+     //     * @param accessToken 현재 액세스 토큰
      * @return 갱신된 인증 응답을 포함한 Mono
      */
     private Mono<AuthResponse> refreshToken(String refreshJwt) {
