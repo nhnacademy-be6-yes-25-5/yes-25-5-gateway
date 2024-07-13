@@ -81,6 +81,8 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
                 String accessJwt = accessJwtHeader.substring(7);
                 String refreshJwt = request.getHeaders().getFirst("Refresh-Token");
 
+                return chain.filter(exchange);
+
             } catch(NullPointerException e) {
                 return chain.filter(exchange);
             }
