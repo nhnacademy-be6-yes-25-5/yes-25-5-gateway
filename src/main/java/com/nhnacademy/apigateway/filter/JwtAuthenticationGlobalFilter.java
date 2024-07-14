@@ -1,9 +1,11 @@
 package com.nhnacademy.apigateway.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -59,12 +61,16 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
-        String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader == null && path.startsWith("/reviews/books")) {
+        if (path.matches(".*/orders/.*/delivery.*")) {
             return chain.filter(exchange);
         }
 
-        if (path.matches(".*/orders/.*/delivery.*")) {
+        String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (Objects.isNull(authorizationHeader) && (path.startsWith("/reviews/books") || path.startsWith("/payments"))) {
+            return chain.filter(exchange);
+        }
+
+        if (path.equals("/orders") && exchange.getRequest().getMethod().equals(HttpMethod.POST) && Objects.isNull(authorizationHeader)) {
             return chain.filter(exchange);
         }
 
@@ -171,7 +177,8 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
         return path.equals("/auth/login") || path.equals("/auth/refresh") || path.equals("/auth/logout")
             || path.equals("/books/categories/root") || (path.startsWith("/books") && !path.startsWith("/books/likes"))
                 || path.matches("/books/likes/books/\\d+") || path.equals("/users/check-email") || path.equals("/users/sign-up")
-                || path.equals("/users/find/password") || path.equals("/users/find/email") || path.equals("/users/info");
+                || path.equals("/users/find/password") || path.equals("/users/find/email") || path.equals("/users/info")
+            || path.startsWith("/users/cart-books") || path.startsWith("/policies");
     }
 
     /**
