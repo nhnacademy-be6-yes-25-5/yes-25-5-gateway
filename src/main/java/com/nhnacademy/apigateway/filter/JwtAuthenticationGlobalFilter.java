@@ -178,7 +178,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
             || path.equals("/books/categories/root") || (path.startsWith("/books") && !path.startsWith("/books/likes"))
                 || path.matches("/books/likes/books/\\d+") || path.equals("/users/check-email") || path.equals("/users/sign-up")
                 || path.equals("/users/find/password") || path.equals("/users/find/email") || path.equals("/users/info")
-            || path.startsWith("/users/cart-books") || path.startsWith("/policies");
+            || path.startsWith("/users/cart-books") || path.startsWith("/policies") || path.startsWith("/auth/dormant");
     }
 
     /**
