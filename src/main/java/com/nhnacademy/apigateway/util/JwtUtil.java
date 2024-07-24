@@ -19,6 +19,7 @@ import java.util.Map;
 import com.nhnacademy.apigateway.common.exception.payload.ErrorStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.apigateway.common.exception.JwtException;
+import com.nhnacademy.apigateway.presentation.dto.response.JwtAuthResponse;
 
 @Slf4j
 @Component
@@ -31,22 +32,22 @@ public class JwtUtil {
     }
 
 
-    public String getSubFromToken(String token) {
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getSubject();
-        } catch (ExpiredJwtException e) {
-            // 만료된 토큰에서 클레임 추출
-            return getSubFromExpiredToken(e.getClaims());
-        } catch (Exception e) {
-            // 다른 예외 처리
-            log.error("토큰 파싱 중 오류 발생", e);
-            return null;
-        }
+    private Claims parseToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public JwtAuthResponse getLoginUserFromToken(String token) {
+        Claims claims = parseToken(token);
+
+        Long userId = claims.get("userId", Long.class);
+        String userRole = claims.get("userRole", String.class);
+        String loginStatusName = claims.get("loginStatus", String.class);
+
+        return new JwtAuthResponse(userId, userRole, loginStatusName);
     }
 
     private String getSubFromExpiredToken(Claims claims) {
