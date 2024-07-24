@@ -1,6 +1,7 @@
 package com.nhnacademy.apigateway.infrastructure.adaptor;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import com.nhnacademy.apigateway.presentation.dto.response.AuthResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,7 @@ import com.nhnacademy.apigateway.presentation.dto.response.JwtAuthResponse;
 public interface AuthAdaptor {
 
     @GetMapping("/refresh")
-    ResponseEntity<AuthResponse> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshJwt);
+    ResponseEntity<AuthResponse> refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessJwt, @RequestHeader("Refresh-Token") String refreshJwt);
 
     @GetMapping("/info")
     JwtAuthResponse getUserInfoByUUID(@RequestParam String uuid);

@@ -106,7 +106,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
 
         if (!jwtUtil.isTokenValid(accessJwt)) {
             if (jwtUtil.isTokenValid(refreshJwt)) {
-                return refreshToken(refreshJwt)
+                return refreshToken(accessJwt, refreshJwt)
                         .flatMap(newTokens -> {
                             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + newTokens.accessToken())
@@ -129,10 +129,10 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
      //     * @param accessToken 현재 액세스 토큰
      * @return 갱신된 인증 응답을 포함한 Mono
      */
-    private Mono<AuthResponse> refreshToken(String refreshJwt) {
+    private Mono<AuthResponse> refreshToken(String accessJwt, String refreshJwt) {
         return Mono.fromCallable(() -> {
                     log.info("Refreshing access token...");
-                    AuthResponse newTokens = tokenService.updateAccessToken(refreshJwt).getBody();
+                    AuthResponse newTokens = tokenService.updateAccessToken(accessJwt, refreshJwt).getBody();
                     log.info("Access token refreshed: {}", newTokens.accessToken());
                     return newTokens;
                 })
