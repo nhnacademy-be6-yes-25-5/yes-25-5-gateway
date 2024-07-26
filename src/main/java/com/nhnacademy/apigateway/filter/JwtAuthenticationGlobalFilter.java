@@ -57,9 +57,9 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
-        if (path.matches("/coupons")) {
-            return chain.filter(exchange);
-        }
+//        if (path.matches("/coupons")) {
+//            return chain.filter(exchange);
+//        }
 
         if (path.matches(".*/orders/.*/delivery.*")) {
             return chain.filter(exchange);
@@ -80,7 +80,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
-        if (path.matches("/books/likes/\\d+/exist") || path.matches("/coupons")) {
+        if (path.matches("/books/likes/\\d+/exist")) {
             try {
 
                 String accessJwtHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
@@ -94,6 +94,10 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
             }
         }
 
+
+        if (path.matches("/coupons") && request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION).isEmpty()) {
+            return chain.filter(exchange);
+        }
 
 
         String accessJwtHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
