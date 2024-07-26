@@ -80,7 +80,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
-        if (path.matches("/books/likes/\\d+/exist")) {
+        if (path.matches("/books/likes/\\d+/exist") || path.matches("/coupons")) {
             try {
 
                 String accessJwtHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
