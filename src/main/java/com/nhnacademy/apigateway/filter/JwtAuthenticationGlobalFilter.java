@@ -93,8 +93,7 @@ public class JwtAuthenticationGlobalFilter implements WebFilter {
             }
         }
 
-
-        if (path.matches("/coupons") && request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION).isEmpty()) {
+        if (path.matches("/coupons") && Objects.isNull(authorizationHeader)) {
             return chain.filter(exchange);
         }
 
