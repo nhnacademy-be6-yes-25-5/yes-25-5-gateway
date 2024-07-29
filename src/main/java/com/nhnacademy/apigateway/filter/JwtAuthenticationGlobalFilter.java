@@ -1,6 +1,12 @@
 package com.nhnacademy.apigateway.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.apigateway.application.service.TokenService;
+import com.nhnacademy.apigateway.presentation.dto.response.AuthResponse;
+import com.nhnacademy.apigateway.util.JwtUtil;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +20,6 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-import com.nhnacademy.apigateway.util.JwtUtil;
-import com.nhnacademy.apigateway.application.service.TokenService;
-import com.nhnacademy.apigateway.presentation.dto.response.AuthResponse;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import com.nhnacademy.apigateway.infrastructure.adaptor.AuthAdaptor;
 
 /**
  * JWT 인증을 처리하는 글로벌 필터 클래스입니다.
