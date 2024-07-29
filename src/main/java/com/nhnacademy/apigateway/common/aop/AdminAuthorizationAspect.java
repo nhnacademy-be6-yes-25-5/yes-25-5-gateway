@@ -31,9 +31,8 @@ public class AdminAuthorizationAspect {
         if (path.contains("/admin")) {
             String accessJwtHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
             String accessJwt = accessJwtHeader.substring(7);
-            String uuid = jwtUtil.getSubFromToken(accessJwt);
-            JwtAuthResponse authResponse = authAdaptor.getUserInfoByUUID(uuid);
-            if (!authResponse.role().equals("ADMIN")) {
+            JwtAuthResponse user = jwtUtil.getLoginUserFromToken(accessJwt);
+            if (!user.role().equals("ADMIN")) {
                 throw new UnauthorizedAccessException(ErrorStatus.builder()
                         .message("접근 권한이 없습니다.")
                         .status(403)
